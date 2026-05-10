@@ -1,8 +1,11 @@
 #include <algorithm>
 #include <array>
+#include <deque>
+#include <iomanip>
 #include <iostream>
 #include <list>
 #include <random>
+#include <set>
 #include <string>
 
 namespace {
@@ -68,7 +71,55 @@ void task2() {
 
     printContainer(names, "After (sorted by length)");
 }
+// -------------------- Завдання 3 --------------------
+// 3) std::deque<double> з цінами, функтор Multiplier(rate), обробка через алгоритми.
+struct Multiplier {
+    double rate;
 
+    explicit Multiplier(double r) : rate(r) {}
+
+    double operator()(double x) const {
+        return x * rate;
+    }
+};
+
+void task3() {
+    printHeader("Task 3: deque<double> + functor Multiplier + transform");
+
+    std::deque<double> prices{ 19.99, 35.50, 120.00, 5.25, 87.30 };
+    printContainer(prices, "Before");
+
+    const double taxRate = 1.20; // наприклад, +20%
+    std::transform(prices.begin(), prices.end(), prices.begin(), Multiplier{taxRate});
+
+    std::cout << std::fixed << std::setprecision(2);
+    printContainer(prices, "After (*1.20)");
+}
+
+// -------------------- Завдання 4 --------------------
+// 4) std::set<int>, функтор WithinRange(min,max) + std::count_if.
+struct WithinRange {
+    int min;
+    int max;
+
+    WithinRange(int mn, int mx) : min(mn), max(mx) {}
+
+    bool operator()(int x) const {
+        return x >= min && x <= max;
+    }
+};
+
+void task4() {
+    printHeader("Task 4: set<int> + count_if + WithinRange functor");
+
+    std::set<int> s{ -10, -2, 0, 1, 2, 5, 10, 11, 20, 42 };
+
+    const int min = 0;
+    const int max = 10;
+
+    const auto count = std::count_if(s.begin(), s.end(), WithinRange{min, max});
+    std::cout << "Elements in [" << min << ", " << max << "] = " << count << '\n';
+}
 } // анонімний простір імен
 
 int main() {
@@ -76,6 +127,7 @@ int main() {
 
     task1();
     task2();
-
+    task3();
+    task4();
     return 0;
 }
