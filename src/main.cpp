@@ -7,6 +7,8 @@
 #include <random>
 #include <set>
 #include <string>
+#include <map>
+#include <vector>
 
 namespace {
 
@@ -120,6 +122,38 @@ void task4() {
     const auto count = std::count_if(s.begin(), s.end(), WithinRange{min, max});
     std::cout << "Elements in [" << min << ", " << max << "] = " << count << '\n';
 }
+// -------------------- Завдання 5 --------------------
+// 5) std::map<string,int> (умовний склад). Використовуючи алгоритми, показати елементи з кількістю > 100.
+void task5() {
+    printHeader("Task 5: map<string,int> + algorithm to print qty > 100 (lambda)");
+
+    std::map<std::string, int> inventory{
+        {"apples", 120},
+        {"bananas", 80},
+        {"coffee", 250},
+        {"tea", 40},
+        {"sugar", 101}
+    };
+
+    std::for_each(inventory.begin(), inventory.end(), [](const auto& kv) {
+        if (kv.second > 100) {
+            std::cout << kv.first << " -> " << kv.second << '\n';
+        }
+    });
+}
+
+// -------------------- Завдання 6 --------------------
+// 6) std::vector<int>, замінити всі від’ємні числа на 0.
+void task6() {
+    printHeader("Task 6: vector<int> + replace_if negatives with 0 (lambda)");
+
+    std::vector<int> v{ 5, -3, 10, -100, 0, 7, -1 };
+    printContainer(v, "Before");
+
+    std::replace_if(v.begin(), v.end(), [](int x) { return x < 0; }, 0);
+
+    printContainer(v, "After");
+}
 } // анонімний простір імен
 
 int main() {
@@ -129,5 +163,7 @@ int main() {
     task2();
     task3();
     task4();
+    task5();
+    task6();
     return 0;
 }
