@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <cctype>
 
 namespace {
 
@@ -30,8 +31,6 @@ void printContainer(const Container& c, const std::string& label) {
     std::cout << '\n';
 }
 
-// -------------------- Завдання 1 --------------------
-// 1) std::list<int> (20 елементів), випадкове заповнення. Функція bool isOdd(int).
 bool isOdd(int n) {
     return (n % 2) != 0;
 }
@@ -49,16 +48,11 @@ void task1() {
 
     printContainer(values, "Before");
 
-    // ПРИМІТКА: std::remove_if не видаляє елементи зі std::list, а лише «пересуває» їх.
-    // Для std::list ідіоматично: values.remove_if(...), або erase(remove_if(...)).
-    // Тут робимо явно як у вимозі: std::remove_if + erase.
     values.erase(std::remove_if(values.begin(), values.end(), isOdd), values.end());
 
     printContainer(values, "After (odd removed)");
 }
 
-// -------------------- Завдання 2 --------------------
-// 2) std::array<string> з іменами, порівняння за довжиною, сортування.
 bool shorterByLength(const std::string& a, const std::string& b) {
     return a.size() < b.size();
 }
@@ -73,8 +67,6 @@ void task2() {
 
     printContainer(names, "After (sorted by length)");
 }
-// -------------------- Завдання 3 --------------------
-// 3) std::deque<double> з цінами, функтор Multiplier(rate), обробка через алгоритми.
 struct Multiplier {
     double rate;
 
@@ -98,8 +90,6 @@ void task3() {
     printContainer(prices, "After (*1.20)");
 }
 
-// -------------------- Завдання 4 --------------------
-// 4) std::set<int>, функтор WithinRange(min,max) + std::count_if.
 struct WithinRange {
     int min;
     int max;
@@ -122,8 +112,6 @@ void task4() {
     const auto count = std::count_if(s.begin(), s.end(), WithinRange{min, max});
     std::cout << "Elements in [" << min << ", " << max << "] = " << count << '\n';
 }
-// -------------------- Завдання 5 --------------------
-// 5) std::map<string,int> (умовний склад). Використовуючи алгоритми, показати елементи з кількістю > 100.
 void task5() {
     printHeader("Task 5: map<string,int> + algorithm to print qty > 100 (lambda)");
 
@@ -142,8 +130,6 @@ void task5() {
     });
 }
 
-// -------------------- Завдання 6 --------------------
-// 6) std::vector<int>, замінити всі від’ємні числа на 0.
 void task6() {
     printHeader("Task 6: vector<int> + replace_if negatives with 0 (lambda)");
 
@@ -154,7 +140,39 @@ void task6() {
 
     printContainer(v, "After");
 }
-} // анонімний простір імен
+void task7() {
+    printHeader("Task 7: vector<int> + sum & average without accumulate");
+
+    std::vector<int> v{ 2, 4, 6, 8, 10 };
+    printContainer(v, "Values");
+    long long sum = 0;
+    std::for_each(v.begin(), v.end(), [&sum](int x) { sum += x; });
+
+    const double avg = v.empty() ? 0.0 : static_cast<double>(sum) / static_cast<double>(v.size());
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "Sum = " << sum << ", Average = " << avg << '\n';
+}
+
+bool isVowelLatin(char ch) {
+    const unsigned char uc = static_cast<unsigned char>(ch);
+    const char c = static_cast<char>(std::tolower(uc));
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y';
+}
+
+std::size_t countVowelsLatin(const std::string& s) {
+    return static_cast<std::size_t>(std::count_if(s.begin(), s.end(), isVowelLatin));
+}
+
+void task8() {
+    printHeader("Task 8: string + count vowels using count_if (function)");
+
+    const std::string text = "Hello, Ukraine!";
+    const auto vowelsCount = countVowelsLatin(text);
+
+    std::cout << "Text: " << text << '\n';
+    std::cout << "Vowels (EN) count = " << vowelsCount << '\n';
+}
+} 
 
 int main() {
     std::cout << "Lab 9: STL algorithms / iterators / containers\n";
@@ -165,5 +183,7 @@ int main() {
     task4();
     task5();
     task6();
+    task7();
+    task8();
     return 0;
 }
